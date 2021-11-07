@@ -2,7 +2,7 @@ import { Client, Intents, Collection, ApplicationCommandData, ApplicationCommand
 import { CommandType } from "../typings/Command";
 import glob from 'glob';
 import { promisify } from "util";
-import { RegisterCommandsOptions } from "../typings/client";
+import { RegisterCommandsOptions } from "../typings/Client";
 import { Event } from "./Event";
 
 const globPromise = promisify(glob);
@@ -16,7 +16,7 @@ export class ExtendedClient extends Client {
 
     start() {
         this.registerModules();
-        this.login(process.env.botToken)
+        this.login(process.env.botToken);
     }
 
     async importFile(filePath: string) {
@@ -38,13 +38,16 @@ export class ExtendedClient extends Client {
         // Commands
         const slashCommands:ApplicationCommandDataResolvable[] = [];
         const commandFiles = await globPromise(`${__dirname}/../commands/*/*{.ts,.js}`);
-        console.log( {commandFiles} );
+        
         commandFiles.forEach(async filePath => {
             const command: CommandType = await this.importFile(filePath);
             if (!command) return;
+            console.log(command);
             this.commands.set(command.name, command);
             slashCommands.push(command);
-        })
+        });
+        const options: RegisterCommandsOptions = { commands: slashCommands, guildId: process.env.guildId }
+        this.registerCommands(options);
 
         // Events
         const eventFiles = await globPromise(`${__dirname}/../events/*{.ts,.js}`);

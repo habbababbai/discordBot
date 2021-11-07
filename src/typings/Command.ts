@@ -1,9 +1,18 @@
-import { ChatInputApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver, PermissionOverwriteResolvable } from "discord.js";
+import { ChatInputApplicationCommandData, 
+    CommandInteraction, 
+    CommandInteractionOptionResolver, 
+    GuildMember, 
+    PermissionOverwriteResolvable 
+} from "discord.js";
 import { ExtendedClient } from '../structures/Client';
+
+export interface ExtendedInteraction extends CommandInteraction {
+    member: GuildMember;
+};
 
 interface RunOptions {
     client: ExtendedClient,
-    interaction: CommandInteraction,
+    interaction: ExtendedInteraction,
     args: CommandInteractionOptionResolver
 };
 
@@ -15,3 +24,4 @@ export type CommandType = {
     cooldown: number;
 
 } & ChatInputApplicationCommandData
+
