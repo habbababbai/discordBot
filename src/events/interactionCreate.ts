@@ -3,7 +3,6 @@ import { ExtendedInteraction} from '../typings/Command'
 import { client } from "../";
 import { CommandInteractionOptionResolver } from 'discord.js';
 
-/** TODO Cooldown  */
 
 export default new Event('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) {
@@ -12,6 +11,7 @@ export default new Event('interactionCreate', async (interaction) => {
         if (!command) {
             return interaction.reply('You have used an non existent command!');
         }
+
 
         command.run({
             args: interaction.options as CommandInteractionOptionResolver,

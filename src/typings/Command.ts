@@ -21,7 +21,6 @@ type RunFunction = (options: RunOptions) => any;
 export type CommandType = {
     userPermissions?: PermissionOverwriteResolvable[];
     run: RunFunction;
-    cooldown: number;
 
 } & ChatInputApplicationCommandData
 

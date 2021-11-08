@@ -1,4 +1,4 @@
-import { Client, Intents, Collection, ApplicationCommandData, ApplicationCommandDataResolvable, ClientEvents, Guild } from "discord.js";
+import { Client, Collection, ApplicationCommandDataResolvable, ClientEvents} from "discord.js";
 import { CommandType } from "../typings/Command";
 import glob from 'glob';
 import { promisify } from "util";
