@@ -12,7 +12,7 @@ export default new Event('interactionCreate', async (interaction) => {
             return interaction.reply('You have used an non existent command!');
         }
 
-
+    
         command.run({
             args: interaction.options as CommandInteractionOptionResolver,
             client,

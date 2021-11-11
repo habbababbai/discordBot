@@ -1,5 +1,5 @@
 import { Command } from '../../structures/Command';
-import { Constants } from 'discord.js';
+import { Constants, PermissionResolvable, Permissions } from 'discord.js';
 
 export default new Command({
     name: 'say',
@@ -12,8 +12,14 @@ export default new Command({
             type: Constants.ApplicationCommandOptionTypes.STRING
         }
     ],
+    userPermissions: [
+        'ADMINISTRATOR'
+    ],
+     
+
     run: async ({interaction, args}) => {
         interaction.channel?.send(args.getString('text') as string);
         interaction.deleteReply();
     }
+    
 })
