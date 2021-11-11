@@ -1,4 +1,4 @@
-import { Client, Collection, ApplicationCommandDataResolvable, ClientEvents, PermissionResolvable} from "discord.js";
+import { Client, Collection, ApplicationCommandDataResolvable, ClientEvents} from "discord.js";
 import { CommandType } from "../typings/Command";
 import glob from 'glob';
 import { promisify } from "util";
@@ -11,9 +11,8 @@ const globPromise = promisify(glob);
 export class ExtendedClient extends Client {
     readonly commands: Collection<string, CommandType> = new Collection();
     readonly slashCommands:ApplicationCommandDataResolvable[] = [];
-    readonly commandPermissions: Collection<string, PermissionResolvable[]> = new Collection();
 
-
+    //Intents 32767 are all Intents
     constructor() {
         super({intents: [32767]});
     };
@@ -27,16 +26,16 @@ export class ExtendedClient extends Client {
         return (await import(filePath))?.default;
     }
 
-    async registerCommands({commands, guildId} : RegisterCommandsOptions) {
+    async registerCommands({commands, guildId} : RegisterCommandsOptions): Promise<void> {
         if (guildId) {
-            this.guilds.cache.get(guildId)?.commands.set(commands);
+            await this.guilds.cache.get(guildId)?.commands.set(commands);
         } else {
-            this.application?.commands.set(commands);
+            await this.application?.commands.set(commands);
         }
     }
+
     
     async registerModules() {
-        
         // Commands
         const commandFiles = await globPromise(`${__dirname}/../commands/*/*{.ts,.js}`);
         commandFiles.forEach(async filePath => {
@@ -45,16 +44,14 @@ export class ExtendedClient extends Client {
             console.log(command);
             this.commands.set(command.name, command);
             this.slashCommands.push(command);
-            if (command.userPermissions) {
-                this.commandPermissions.set(command.name ,command.userPermissions);
-            }
         });
         
         this.on('ready', () => {
             this.registerCommands({
                 commands: client.slashCommands,
                 guildId: process.env.guildId
-            })
+            });
+
         });
         
 
