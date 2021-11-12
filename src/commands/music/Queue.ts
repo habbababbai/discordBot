@@ -22,33 +22,43 @@ export default new Command({
         if (!queue.playing) 
             return interaction.followUp({content: `No music is currently being played!`});
 
-        const currentTrack = queue.current;
+        
+        const embed: MessageEmbed = new MessageEmbed();
 
-        const tracks = queue.tracks.slice(0, 10).map((m, i) => {
-            return `\`${i + 1}.\` - [**${m.title}**](${m.url}) - \`${m.requestedBy.tag}\``;
-        });
-
-        const queueEmbed = new MessageEmbed()
-            .setColor('RANDOM')
+        const nowPlaying = queue.current;
+        const header = `| [**${nowPlaying.title}**](${nowPlaying.url}) - \`${nowPlaying.requestedBy.tag}\`\n\n`;
+        embed.setColor('RANDOM')
             .setTitle(`Song Queue - ${interaction.guild.name}`)
             .setFooter(`Queued by ${interaction.user.tag}`)
-            .addFields([
-                { 
-                    name: 'Current:', 
-                    value: `| [**${currentTrack.title}**](${currentTrack.url}) - \`${currentTrack.requestedBy.tag}\`\n\n`},
-                {
-                    name: 'Queue', 
-                    value: `${tracks.join("\n")}${queue.tracks.length > tracks.length ? `\n...${queue.
-                    tracks.length - tracks.length === 1 ? `${queue.tracks.length - tracks.length} more track` : `${queue.
-                    tracks.length - tracks.length} more tracks`}` : ""}`
-                },
-            ])
-            .setThumbnail(currentTrack.thumbnail)
+            .addField('Current', header)
+            .setThumbnail(nowPlaying.thumbnail)
             .setTimestamp()
+            
+        if (queue.tracks.length < 5 && queue.tracks.length > 0) {
+            let tracks: string = '';
+            for (let i = 1; i < queue.tracks.length; i++) {
+                const track = queue.tracks[i];
+                tracks += `\`${i + 1}\` - [**${track.title}**](${track.url}) - \`${track.requestedBy.tag}\``;
+            }
+        }
 
-        interaction.followUp({
-            embeds: [queueEmbed]
-        })
+        if (queue.tracks.length > 0) {
+            let tracks: string = '';
+            for (let i = 0; i < 5; i++) {
+                if (queue.tracks[i]) {
+                    const track = queue.tracks[i];
+                    tracks += `\`${i + 1}\` - [**${track.title}**](${track.url}) - \`${track.requestedBy.tag}\` \n`;
+                }
+            }
+            if (queue.tracks.length > 5) {
+                tracks += '\n \`More in queue...\`'
+            }
+            if (tracks !== '') {
+                embed.addField('Queue', tracks);
+            }
+        }
+
+        interaction.followUp({embeds: [embed]});
 
     }
 })

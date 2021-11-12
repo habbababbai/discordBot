@@ -8,14 +8,14 @@ export default new Command({
     description: 'Plays a song',
     options: [
         {
-            name: 'song',
+            name: 'url',
             description: 'Enter song name/url',
             required: true,
             type:'STRING'
         }
     ],
     run: async ({interaction}) => {
-        const songTitle = interaction.options.getString('song');
+        const songTitle = interaction.options.getString('url');
 
         if (!interaction.member.voice.channel) 
             return interaction.followUp({

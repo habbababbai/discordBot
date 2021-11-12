@@ -27,11 +27,7 @@ export class ExtendedClient extends Client {
     }
 
     async registerCommands({commands, guildId} : RegisterCommandsOptions): Promise<void> {
-        if (guildId) {
-            await this.guilds.cache.get(guildId)?.commands.set(commands);
-        } else {
-            await this.application?.commands.set(commands);
-        }
+        await this.guilds.cache.get(guildId as string)?.commands.set(commands);
     }
 
     
