@@ -11,16 +11,34 @@ export default new Command({
 
         if (!interaction.member.voice.channel) 
             return interaction.followUp({
-                content: 'You have to be in voice channel!'
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'You have to be in voice channel!')
+                ],
+                ephemeral: true
             });
-               
+        
         if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) 
             return interaction.followUp({
-                content: 'You have to be in the same voice channel as me!'
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'You have to be in the same voice channel as me!')
+                ],
+                ephemeral: true
             });
 
         if (!queue.playing) 
-            return interaction.followUp({content: `No music is currently being played!`});
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'No music is currently being played!')
+                ],
+                ephemeral: true
+            });
+
 
         
         const embed: MessageEmbed = new MessageEmbed();
@@ -29,7 +47,7 @@ export default new Command({
         const header = `| [**${nowPlaying.title}**](${nowPlaying.url}) - \`${nowPlaying.requestedBy.tag}\`\n\n`;
         embed.setColor('RANDOM')
             .setTitle(`Song Queue - ${interaction.guild.name}`)
-            .setFooter(`Queued by ${interaction.user.tag}`)
+            .setFooter(`Used by \`${interaction.user.tag}\``)
             .addField('Current', header)
             .setThumbnail(nowPlaying.thumbnail)
             .setTimestamp()

@@ -1,5 +1,5 @@
 import { QueryType } from "discord-player";
-import { Guild } from "discord.js";
+import { Guild, MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
 import Player from '../../structures/Player'
 
@@ -18,9 +18,14 @@ export default new Command({
         const songTitle = interaction.options.getString('url');
 
         if (!interaction.member.voice.channel) 
-            return interaction.followUp({
-                content: 'You have to be in voice channel!'
-            });
+        return interaction.followUp({
+            embeds: [
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Error', 'You have to be in voice channel!')
+            ],
+            ephemeral: true
+        });
         
         const searchReasult = await Player.search(songTitle as string, {
             requestedBy: interaction.user,
@@ -36,8 +41,14 @@ export default new Command({
 
         if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) 
             return interaction.followUp({
-                content: 'You have to be in the same voice channel as me!'
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'You have to be in the same voice channel as me!')
+                ],
+                ephemeral: true
             });
+
 
         searchReasult.playlist 
         ? queue.addTracks(searchReasult.tracks) 
@@ -46,7 +57,14 @@ export default new Command({
         if (!queue.playing) await queue.play();
 
         interaction.followUp({
-            content: `Song added **${searchReasult.tracks[0]}** - requested by **${interaction.user.tag}** - into **${interaction.member.voice.channel.name}**.`
+            embeds: [
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Play', `Song added **${searchReasult.tracks[0]}** \n into **${interaction.member.voice.channel.name}**.`)
+                .setThumbnail(searchReasult.tracks[0].thumbnail)
+                .setFooter(`Queued by \`${interaction.user.tag}\``)
+                .setTimestamp()
+            ]
         })
 
     }

@@ -1,5 +1,6 @@
 import { Command } from '../../structures/Command';
 import Player from '../../structures/Player';
+import { MessageEmbed } from 'discord.js';
 
 export default new Command ({
     name: 'volume',
@@ -21,17 +22,51 @@ export default new Command ({
                 content: 'You have to be in voice channel!'
             });
 
-        if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) return interaction.followUp({content: 'You have to be in the same voice channel as me!'});
+        if (!interaction.member.voice.channel) 
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'You have to be in voice channel!')
+                ],
+                ephemeral: true
+            });
 
-        if (!queue.playing) return interaction.followUp({content: 'No music is currently being played!'});
+        if (!queue.playing) 
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'No music is currently being played!')
+                ],
+                ephemeral: true
+            });
 
-        if (!volumePercentage) return interaction.followUp({ content: `Current volume is \`${queue.volume}%\``});
+
+        if (!volumePercentage) 
+            return interaction.followUp({ 
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Percentage', `Current volume is \`${queue.volume}%\``)
+                    .setFooter(`Checked by \`${interaction.user.tag}\``)
+                    .setTimestamp()
+                ]
+            });
 
         if (volumePercentage < 0 || volumePercentage > 100) return interaction.followUp({ content: 'Volume value must be between \'1\' & \'100\'!' });
 
         queue.setVolume(volumePercentage);
 
-        interaction.followUp({ content: `Volume has been set to \`${volumePercentage}%\`` })
+        interaction.followUp({
+            embeds: [
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Percentage', `Volume has been set to \`${volumePercentage}%\``)
+                .setFooter(`Checked by \`${interaction.user.tag}\``)
+                .setTimestamp()
+            ] 
+        })
 
 
     }

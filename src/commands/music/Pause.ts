@@ -1,3 +1,4 @@
+import { MessageEmbed } from 'discord.js';
 import { Command } from '../../structures/Command';
 import Player from '../../structures/Player'
 
@@ -7,17 +8,47 @@ export default new Command({
     run: async ({interaction}) => {
         if (!interaction.member.voice.channel) 
             return interaction.followUp({
-                content: 'You have to be in voice channel!'
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'You have to be in voice channel!')
+                ],
+                ephemeral: true
             });
 
-        if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) return interaction.followUp({content: 'You have to be in the same voice channel as me!'});
+        if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) 
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'You have to be in the same voice channel as me!')
+                ],
+                ephemeral: true
+            });
 
         const queue = Player.getQueue(interaction.guild);
 
-        if (!queue.playing) return interaction.followUp({content: 'No music is currently being played!'});
+        if (!queue.playing) 
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'No music is currently being played!')
+                ],
+                ephemeral: true
+            });
 
         queue.setPaused(true);
 
-        interaction.followUp({content: `Song **${queue.current.title}** has been paused.`});
+        interaction.followUp({
+            embeds: [
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Pause',  `Song **${queue.current.title}** has been paused.`)
+                .setFooter(`Paused by \`${interaction.user.tag}\``)
+                .setTimestamp()
+                .setThumbnail(queue.current.thumbnail)
+            ],
+        });
     }
 })
