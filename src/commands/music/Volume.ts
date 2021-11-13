@@ -19,11 +19,6 @@ export default new Command ({
 
         if (!interaction.member.voice.channel) 
             return interaction.followUp({
-                content: 'You have to be in voice channel!'
-            });
-
-        if (!interaction.member.voice.channel) 
-            return interaction.followUp({
                 embeds: [
                     new MessageEmbed()
                     .setColor('RANDOM')
@@ -38,6 +33,16 @@ export default new Command ({
                     new MessageEmbed()
                     .setColor('RANDOM')
                     .addField('Error', 'No music is currently being played!')
+                ],
+                ephemeral: true
+            });
+
+        if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) 
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'You have to be in the same voice channel as me!')
                 ],
                 ephemeral: true
             });

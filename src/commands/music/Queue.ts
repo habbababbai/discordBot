@@ -1,3 +1,4 @@
+import { Track } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
 import Player from '../../structures/Player'
@@ -43,8 +44,8 @@ export default new Command({
         
         const embed: MessageEmbed = new MessageEmbed();
 
-        const nowPlaying = queue.current;
-        const header = `| [**${nowPlaying.title}**](${nowPlaying.url}) - \`${nowPlaying.requestedBy.tag}\`\n\n`;
+        const nowPlaying: Track = queue.current;
+        const header: string = `| [**${nowPlaying.title}**](${nowPlaying.url}) - \`${nowPlaying.requestedBy.tag}\`\n\n`;
         embed.setColor('RANDOM')
             .setTitle(`Song Queue - ${interaction.guild.name}`)
             .setFooter(`Used by \`${interaction.user.tag}\``)
@@ -55,7 +56,7 @@ export default new Command({
         if (queue.tracks.length < 5 && queue.tracks.length > 0) {
             let tracks: string = '';
             for (let i = 1; i < queue.tracks.length; i++) {
-                const track = queue.tracks[i];
+                const track: Track = queue.tracks[i];
                 tracks += `\`${i + 1}\` - [**${track.title}**](${track.url}) - \`${track.requestedBy.tag}\``;
             }
         }
