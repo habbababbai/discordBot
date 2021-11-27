@@ -1,9 +1,10 @@
-import { Player, QueryType, QueueRepeatMode } from "discord-player";
+import { Player } from "discord-player";
 import { client } from '../index';
 
 export default new Player(client, {
     ytdlOptions: {
         quality: 'highestaudio',
-        highWaterMark: 1 << 25
+        highWaterMark: 1 << 25,
+        dlChunkSize: 0,
     }
 })
