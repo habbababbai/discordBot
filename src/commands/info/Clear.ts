@@ -35,7 +35,7 @@ export default new Command({
         }
         await interaction.channel.messages.fetch({limit: number + 1}).then(messages => {
             const channel = interaction.channel as TextChannel;
-            channel.bulkDelete(messages);
+            channel.bulkDelete(messages, true);
             
             channel.send({
                 embeds: [
