@@ -30,12 +30,12 @@ export default new Command({
                 ephemeral: true
             });
 
-        if (!queue.playing) 
+        if (!queue) 
             return interaction.followUp({
                 embeds: [
                     new MessageEmbed()
                     .setColor('RANDOM')
-                    .addField('Error', 'No music is currently being played!')
+                    .addField('Error', 'Queue is empty!')
                 ],
                 ephemeral: true
             });

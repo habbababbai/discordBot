@@ -5,9 +5,10 @@ import { client } from '../index';
 export default new Player(client, {
     ytdlOptions: {
         quality: 'highestaudio',
+        filter: 'audioonly',
         highWaterMark: 1 << 25,
         dlChunkSize: 0,
-    }
+    },
 }).on('trackStart', (queue, track) => {
     (queue.metadata as TextChannel).send({embeds: [
         new MessageEmbed()
