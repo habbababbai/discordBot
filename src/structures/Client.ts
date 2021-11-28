@@ -37,10 +37,11 @@ export class ExtendedClient extends Client {
         commandFiles.forEach(async filePath => {
             const command: CommandType = await this.importFile(filePath);
             if (!command) return;
-            console.log(command);
             this.commands.set(command.name, command);
             this.slashCommands.push(command);
         });
+
+        //TODO Command Permissions
         
         this.on('ready', () => {
             this.registerCommands({
@@ -58,6 +59,7 @@ export class ExtendedClient extends Client {
             const event: Event<keyof ClientEvents> = await this.importFile(filePath);
             this.on(event.event, event.run);
         })
+        
 
     }
 }
