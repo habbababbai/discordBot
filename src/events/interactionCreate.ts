@@ -1,16 +1,23 @@
 import { Event } from '../structures/Event';
 import { ExtendedInteraction} from '../typings/Command'
 import { client } from "../";
-import { CommandInteractionOptionResolver } from 'discord.js';
+import { CommandInteractionOptionResolver, MessageEmbed } from 'discord.js';
 
 
 export default new Event('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) {
-        await interaction.deferReply();
         const command = client.commands.get(interaction.commandName);
-        if (!command) {
-            return interaction.reply('You have used an non existent command!');
+        if (command.userPermissions) {
+            if (!interaction.memberPermissions.has(command.userPermissions)){
+                return interaction.reply({embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', `You do not have required permissions to use this command! \n Missing perms: **${command.userPermissions}**`)
+                ],
+                ephemeral: true});
+            }
         }
+        await interaction.deferReply();
 
         command.run({
             args: interaction.options as CommandInteractionOptionResolver,

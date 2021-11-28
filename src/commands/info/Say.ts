@@ -1,9 +1,9 @@
 import { Command } from '../../structures/Command';
-import { Constants, PermissionResolvable, Permissions } from 'discord.js';
+import { Constants } from 'discord.js';
 
 export default new Command({
     name: 'say',
-    description: 'Bot writes text in channel',
+    description: 'Bot writes text in channel. REQUIRES ADMIN PERMS',
     options: [
         {
             name: 'text',

@@ -10,6 +10,7 @@ Simple Discord bot made with Typescript.
 - /stop
 - /queue
 - /volume (percentage?)
+- /clear (number of messages)
 ## Installation
 1. Install dependencies
 ```s

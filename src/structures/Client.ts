@@ -27,10 +27,8 @@ export class ExtendedClient extends Client {
     }
 
     async registerCommands({commands, guildId} : RegisterCommandsOptions): Promise<void> {
-        await this.guilds.cache.get(guildId as string)?.commands.set(commands);
+        await this.guilds.cache.get(guildId as string)?.commands.set(commands)
     }
-
-    
     async registerModules() {
         // Commands
         const commandFiles = await globPromise(`${__dirname}/../commands/*/*{.ts,.js}`);
@@ -41,7 +39,6 @@ export class ExtendedClient extends Client {
             this.slashCommands.push(command);
         });
 
-        //TODO Command Permissions
         
         this.on('ready', () => {
             this.registerCommands({
