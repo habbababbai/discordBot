@@ -33,15 +33,16 @@ export default new Command({
         } else {
             number = option;
         }
-        await interaction.channel.messages.fetch({limit: number + 1}).then(messages => {
+        await interaction.channel.messages.fetch({limit: number + 1}).then(async messages => {
             const channel = interaction.channel as TextChannel;
-            channel.bulkDelete(messages, true);
+            const messagesDeleted = await channel.bulkDelete(messages, true);
+            const oldCount = number - messagesDeleted.size;
             
             channel.send({
                 embeds: [
                     new MessageEmbed()
                     .setColor('RANDOM')
-                    .addField('Clear', `Deleted \'${number}\' messages succesfully!`)
+                    .addField('Clear', `Deleted \'${messagesDeleted.size}\' messages succesfully! \n **${oldCount}** messages were too old to delete!`)
                 ]
             });
         });
