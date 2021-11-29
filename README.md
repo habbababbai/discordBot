@@ -30,6 +30,5 @@ tsc || npm run build
 npm run start
 ```
 
-## Issues
-Some tracks may get skipped by bot or may cause it to leave the voice channel. Fix to that issue can be found [here](https://github.com/Androz2091/discord-player/issues/794#issue-1000772967).
+
 
