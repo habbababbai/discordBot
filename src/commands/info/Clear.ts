@@ -4,7 +4,7 @@ import { Constants } from "discord.js";
 
 export default new Command({
     name: 'clear',
-    description: 'deletes last n number of messages in text channel',
+    description: 'Deletes n number of messages in text channel. REQUIRES ADMIN PERMS',
     options: [
         {
             name: 'number',

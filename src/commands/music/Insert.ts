@@ -1,17 +1,17 @@
 import { QueryType } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
-import { Command } from '../../structures/Command';
-import Player from '../../structures/Player'
+import { Command } from "../../structures/Command";
+import Player from '../../structures/Player';
 
-export default new Command({
-    name:'play',
-    description: 'Plays a song.',
+export default new Command ({
+    name: 'insert',
+    description: 'Insert song into queue.',
     options: [
         {
             name: 'url',
-            description: 'Enter song title / url / playlist',
+            description: 'Enter song name/url',
             required: true,
-            type:'STRING'
+            type: 'STRING'
         }
     ],
     run: async ({interaction}) => {
@@ -50,10 +50,12 @@ export default new Command({
                 ephemeral: true
             });
 
-
-        searchReasult.playlist 
-        ? queue.addTracks(searchReasult.tracks) 
-        : queue.addTrack(searchReasult.tracks[0]);
+        if (queue.tracks.length === 0) {
+            searchReasult.playlist 
+            ? queue.addTracks(searchReasult.tracks) 
+            : queue.addTrack(searchReasult.tracks[0]);
+        }
+        queue.insert(searchReasult.tracks[0])
 
         if (!queue.playing) await queue.play();
 
@@ -61,10 +63,9 @@ export default new Command({
             embeds: [
                 new MessageEmbed()
                 .setColor('RANDOM')
-                .addField('Play', `Song added to queue **${searchReasult.tracks[0]}** \n into **${interaction.member.voice.channel.name}**.`)
+                .addField('Insert', `Song inserted **${searchReasult.tracks[0]}** \n into **${interaction.member.voice.channel.name}**.`)
                 .setThumbnail(searchReasult.tracks[0].thumbnail)
                 .setFooter(`Queued by \`${interaction.member.nickname}\``)
-                .setFooter(`Used by \`${interaction.user.tag}\``)
                 .setTimestamp()
             ]
         })

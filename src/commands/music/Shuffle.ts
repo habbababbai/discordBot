@@ -1,11 +1,15 @@
+import { Track } from "discord-player";
+import { Guild, MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
-import { MessageEmbed } from 'discord.js';
 import Player from '../../structures/Player'
 
 export default new Command({
-    name:'skip',
-    description: 'Skips current song.',
+    name:'shuffle',
+    description: 'Shuffles songs in queue.',
     run: async ({interaction}) => {
+        
+        const queue = await Player.createQueue(interaction.guild as Guild, {metadata: interaction.channel});
+
         if (!interaction.member.voice.channel) 
             return interaction.followUp({
                 embeds: [
@@ -15,7 +19,7 @@ export default new Command({
                 ],
                 ephemeral: true
             });
-
+        
         if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) 
             return interaction.followUp({
                 embeds: [
@@ -26,32 +30,25 @@ export default new Command({
                 ephemeral: true
             });
 
-        const queue = Player.getQueue(interaction.guild);
-
-        if (!queue.playing) 
+        if (!queue) 
             return interaction.followUp({
                 embeds: [
                     new MessageEmbed()
                     .setColor('RANDOM')
-                    .addField('Error', 'No music is currently being played!')
+                    .addField('Error', 'Queue is empty!')
                 ],
                 ephemeral: true
             });
 
-        const skippedTrack = queue.current;
+        await queue.shuffle();
 
-        if (queue.skip()) {
-            interaction.followUp({
-                embeds: [
-                    new MessageEmbed()
-                    .setColor('RANDOM')
-                    .addField('Skip',  `Song **${skippedTrack.title}** has been skipped`)
-                    .setThumbnail(skippedTrack.thumbnail)
-                    .setFooter(`Paused by \`${interaction.user.tag}\``)
-                    .setTimestamp()
-                    .setThumbnail(skippedTrack.thumbnail)
-                ],
-            });
-        }
+        return interaction.followUp({
+            embeds: [
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Shuffle', 'Shuffled the queue!')
+            ]
+        })
+
     }
 })

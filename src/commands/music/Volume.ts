@@ -4,7 +4,7 @@ import { MessageEmbed } from 'discord.js';
 
 export default new Command ({
     name: 'volume',
-    description: 'Changes or check volume of player',
+    description: 'Changes or check volume of player.',
     options: [
         {
             name: 'amount',

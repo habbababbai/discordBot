@@ -4,7 +4,7 @@ import Player from '../../structures/Player'
 
 export default new Command({
     name:'stop',
-    description: 'Stops current song and leaves voice channel',
+    description: 'Stops current song and leaves voice channel.',
     run: async ({interaction}) => {
         if (!interaction.member.voice.channel) 
             return interaction.followUp({

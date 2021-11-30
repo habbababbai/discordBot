@@ -4,7 +4,7 @@ import Player from '../../structures/Player'
 
 export default new Command({
     name:'resume',
-    description: 'Resumes current song',
+    description: 'Resumes current song.',
     run: async ({interaction}) => {
         if (!interaction.member.voice.channel) 
             return interaction.followUp({

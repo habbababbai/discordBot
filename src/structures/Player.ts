@@ -15,7 +15,24 @@ export default new Player(client, {
         .setColor('RANDOM')
         .addField('Now playing', `Song **${track}** \n in **${queue.connection.channel}**.`)
         .setThumbnail(track.thumbnail)
-        .setFooter(`Queued by \`${track.author}\``)
+        .setFooter(`Queued by \`${track.requestedBy}\``)
         .setTimestamp()
     ]})
+}).on('channelEmpty', (queue) => {
+    console.log('channelEmpty event run!');
+    const channel = queue.connection.channel;
+    queue.stop();
+    (queue.metadata as TextChannel).send({embeds: [
+        new MessageEmbed()
+        .setColor('RANDOM')
+        .addField('Disconnect', `**${channel.name}** is empty. Leaving voice channel!`)
+        .setTimestamp()
+    ]});
+}).on('connectionCreate', (queue, connection) => {
+    (queue.metadata as TextChannel).send({embeds: [
+        new MessageEmbed()
+        .setColor('RANDOM')
+        .addField('Join', `Joining **${connection.channel.name}** voice channel!`)
+        .setTimestamp()
+    ]});
 })

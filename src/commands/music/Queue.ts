@@ -5,7 +5,7 @@ import Player from '../../structures/Player'
 
 export default new Command({
     name:'queue',
-    description: 'Displays all songs in queue',
+    description: 'Displays all songs in queue.',
     run: async ({interaction}) => {
         
         const queue = await Player.createQueue(interaction.guild as Guild, {metadata: interaction.channel});
