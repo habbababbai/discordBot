@@ -1,5 +1,4 @@
 import { Command } from '../../structures/Command';
-import Player from '../../structures/Player';
 import { MessageEmbed } from 'discord.js';
 
 export default new Command ({
@@ -13,9 +12,9 @@ export default new Command ({
             required: false
         }
     ],
-    run: async ({interaction}) => {
+    run: async ({interaction, player}) => {
         const volumePercentage = interaction.options.getInteger('amount');
-        const queue = Player.getQueue(interaction.guildId);
+        const queue = player.getQueue(interaction.guildId);
 
         if (!interaction.member.voice.channel) 
             return interaction.followUp({
@@ -60,7 +59,8 @@ export default new Command ({
             });
 
         if (volumePercentage < 0 || volumePercentage > 100) return interaction.followUp({ content: 'Volume value must be between \'1\' & \'100\'!' });
-
+        
+        player.defaultVolume = volumePercentage;
         queue.setVolume(volumePercentage);
 
         interaction.followUp({

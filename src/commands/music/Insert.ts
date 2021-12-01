@@ -1,7 +1,6 @@
 import { QueryType } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
 import { Command } from "../../structures/Command";
-import Player from '../../structures/Player';
 
 export default new Command ({
     name: 'insert',
@@ -14,7 +13,7 @@ export default new Command ({
             type: 'STRING'
         }
     ],
-    run: async ({interaction}) => {
+    run: async ({interaction, player}) => {
         const songTitle = interaction.options.getString('url');
 
         if (!interaction.member.voice.channel) 
@@ -27,14 +26,13 @@ export default new Command ({
             ephemeral: true
         });
         
-        const searchReasult = await Player.search(songTitle as string, {
+        const searchReasult = await player.search(songTitle as string, {
             requestedBy: interaction.user,
             searchEngine: QueryType.AUTO
         });
         
-        const queue = await Player.createQueue(interaction.guild as Guild, {
-            metadata: interaction.channel,
-            leaveOnEmpty: false,
+        const queue = await player.createQueue(interaction.guild as Guild, {
+            metadata: interaction.channel
         });
 
         if (!queue.connection) 

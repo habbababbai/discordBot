@@ -1,14 +1,12 @@
-import { Track } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
-import Player from '../../structures/Player'
 
 export default new Command({
     name:'shuffle',
     description: 'Shuffles songs in queue.',
-    run: async ({interaction}) => {
+    run: async ({interaction, player}) => {
         
-        const queue = await Player.createQueue(interaction.guild as Guild, {metadata: interaction.channel});
+        const queue = await player.getQueue(interaction.guild);
 
         if (!interaction.member.voice.channel) 
             return interaction.followUp({

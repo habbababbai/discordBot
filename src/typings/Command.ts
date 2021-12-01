@@ -1,9 +1,9 @@
+import { ExtendedPlayer } from "../structures/Player";
 import { ChatInputApplicationCommandData, 
     CommandInteraction, 
     CommandInteractionOptionResolver, 
     GuildMember, 
     PermissionResolvable ,
-    ApplicationCommandPermissionData
 } from "discord.js";
 import { ExtendedClient } from '../structures/Client';
 
@@ -15,6 +15,7 @@ interface RunOptions {
     client: ExtendedClient,
     interaction: ExtendedInteraction,
     args: CommandInteractionOptionResolver,
+    player: ExtendedPlayer
 };
 
 type RunFunction = (options: RunOptions) => any;

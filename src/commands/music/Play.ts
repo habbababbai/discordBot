@@ -1,7 +1,6 @@
 import { QueryType } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
-import Player from '../../structures/Player'
 
 export default new Command({
     name:'play',
@@ -14,9 +13,9 @@ export default new Command({
             type:'STRING'
         }
     ],
-    run: async ({interaction}) => {
+    run: async ({interaction, player}) => {
         const songTitle = interaction.options.getString('url');
-
+    
         if (!interaction.member.voice.channel) 
         return interaction.followUp({
             embeds: [
@@ -27,15 +26,29 @@ export default new Command({
             ephemeral: true
         });
         
-        const searchReasult = await Player.search(songTitle as string, {
+        const searchReasult = await player.search(songTitle as string, {
             requestedBy: interaction.user,
             searchEngine: QueryType.AUTO
         });
         
-        const queue = await Player.createQueue(interaction.guild as Guild, {
-            metadata: interaction.channel,
-            leaveOnEmpty: false,
+        const queue = await player.createQueue(interaction.guild as Guild, {
+            metadata: interaction.channel
         });
+
+        try {
+            if (!queue.connection) 
+                await queue.connect(interaction.member.voice.channel);
+        } catch (error) {
+            player.deleteQueue(interaction.guild);
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'Could not join your voice channel!')
+                ],
+                ephemeral: true
+            });
+        }
 
         if (!queue.connection) 
             await queue.connect(interaction.member.voice.channel);
@@ -49,7 +62,8 @@ export default new Command({
                 ],
                 ephemeral: true
             });
-
+        
+        queue.setVolume(player.defaultVolume);
 
         searchReasult.playlist 
         ? queue.addTracks(searchReasult.tracks) 

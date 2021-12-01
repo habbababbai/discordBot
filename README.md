@@ -4,6 +4,8 @@ Simple Discord bot made with Typescript.
 - /ping
 - /say (text)
 - /play (url || song name)
+- /insert (url || song name)
+- /shuffle
 - /pause
 - /resume
 - /skip

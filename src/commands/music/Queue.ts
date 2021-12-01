@@ -1,15 +1,12 @@
 import { Track } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
-import Player from '../../structures/Player'
 
 export default new Command({
     name:'queue',
     description: 'Displays all songs in queue.',
-    run: async ({interaction}) => {
+    run: async ({interaction, player}) => {
         
-        const queue = await Player.createQueue(interaction.guild as Guild, {metadata: interaction.channel});
-
         if (!interaction.member.voice.channel) 
             return interaction.followUp({
                 embeds: [
@@ -29,7 +26,8 @@ export default new Command({
                 ],
                 ephemeral: true
             });
-
+            
+        const queue = await player.getQueue(interaction.guild);
         if (!queue) 
             return interaction.followUp({
                 embeds: [

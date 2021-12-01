@@ -1,11 +1,10 @@
 import { Command } from '../../structures/Command';
 import { MessageEmbed } from 'discord.js';
-import Player from '../../structures/Player'
 
 export default new Command({
     name:'skip',
     description: 'Skips current song.',
-    run: async ({interaction}) => {
+    run: async ({interaction, player}) => {
         if (!interaction.member.voice.channel) 
             return interaction.followUp({
                 embeds: [
@@ -26,7 +25,7 @@ export default new Command({
                 ephemeral: true
             });
 
-        const queue = Player.getQueue(interaction.guild);
+        const queue = player.getQueue(interaction.guild);
 
         if (!queue.playing) 
             return interaction.followUp({
