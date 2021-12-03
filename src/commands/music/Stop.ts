@@ -36,9 +36,10 @@ export default new Command({
                 ],
                 ephemeral: true
             });
-
-        queue.stop();
-
+        
+        if (!queue.destroyed) {
+            queue.stop();
+        }
         interaction.followUp({
             embeds: [
                 new MessageEmbed()

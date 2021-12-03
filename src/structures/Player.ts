@@ -39,6 +39,15 @@ export class ExtendedPlayer extends Player {
                 await queue.connection.disconnect();
                 await queue.stop();
             }
+
+            if (queue.tracks.length === 0 ) {
+                (queue.metadata as TextChannel).send({embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Disconnect', `**Queue** is empty. Leaving voice channel!`)
+                    .setTimestamp()
+                ]});
+            }
         })
         .on('connectionCreate', (queue, connection) => {
             (queue.metadata as TextChannel).send({embeds: [
@@ -50,6 +59,15 @@ export class ExtendedPlayer extends Player {
         })
         .on('error', (queue, error) => {
             console.log(`**${queue.guild.name}**: Error emitted from the queue: **${error.message}**`);
+            queue.clear();
+            queue.connection.disconnect();
+            const channel = queue.connection.channel;
+            (queue.metadata as TextChannel).send({embeds: [
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Error', `An error has occured **${error.message}**.`)
+                .setTimestamp()
+            ]})
         })
         .on('connectionError', (queue, error) => {
             console.log(`**${queue.guild.name}**: Error emitted from the queue: **${error.message}**`);

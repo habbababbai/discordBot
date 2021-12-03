@@ -1,5 +1,5 @@
 import { Track } from "discord-player";
-import { Guild, MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
 
 export default new Command({
