@@ -94,7 +94,7 @@ export default new Command ({
 
         
 
-        interaction.followUp({embeds: [embed]});
+        interaction.followUp({embeds: [embed], ephemeral: true});
 
 
     }
