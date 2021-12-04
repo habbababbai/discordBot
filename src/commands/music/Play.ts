@@ -1,4 +1,4 @@
-import { QueryType } from "discord-player";
+import { QueryType, Track } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
 import { Command } from '../../structures/Command';
 
@@ -8,7 +8,7 @@ export default new Command({
     options: [
         {
             name: 'url',
-            description: 'Enter song title / url / playlist',
+            description: 'Enter song title / url / playlist from Youtube / Spotify / Soundcloud',
             required: true,
             type:'STRING'
         }
@@ -31,7 +31,7 @@ export default new Command({
             searchEngine: QueryType.AUTO
         });
         
-        const queue = await player.createQueue(interaction.guild as Guild, {
+        const queue = player.createQueue(interaction.guild as Guild, {
             metadata: interaction.channel
         });
 
@@ -71,17 +71,32 @@ export default new Command({
 
         if (!queue.playing) await queue.play();
 
-        interaction.followUp({
-            embeds: [
-                new MessageEmbed()
-                .setColor('RANDOM')
-                .addField('Play', `Song added to queue **${searchReasult.tracks[0]}** \n into **${interaction.member.voice.channel.name}**.`)
-                .setThumbnail(searchReasult.tracks[0].thumbnail)
-                .setFooter(`Queued by \`${interaction.member.nickname}\``)
-                .setFooter(`Used by \`${interaction.user.tag}\``)
-                .setTimestamp()
-            ]
-        })
+        const embed = new MessageEmbed();
+
+        const current:Track = searchReasult.tracks[0];
+        const trackInfo: string = `| [**${current.title}**](${current.url}) - \`${current.requestedBy.tag}\`\n\n`;
+        embed.setColor('RANDOM')
+            .setTitle(`Added Song - ${interaction.guild.name}`)
+            .setFooter(`Used by \`${interaction.user.tag}\``)
+            .addField('Song', trackInfo)
+            .setThumbnail(current.thumbnail)
+            .setTimestamp()
+
+        if (searchReasult.playlist) {
+            let tracks: string = '';
+            for (let i = 1; i < 6; i++) {
+                if (searchReasult.playlist.tracks[i]) {
+                    const track = searchReasult.playlist.tracks[i];
+                    tracks += `\`${i + 1}\` - [**${track.title}**](${track.url}) - \`${track.requestedBy.tag}\` \n`;
+                }
+            }
+            if (searchReasult.playlist.tracks.length > 6) {
+                tracks += '\n \`More in queue...\`'
+            }
+            embed.addField(`And ${searchReasult.playlist.tracks.length} more tracks:`, tracks)
+        }
+
+        interaction.followUp({embeds: [embed]});
 
     }
 })

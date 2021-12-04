@@ -44,9 +44,9 @@ export default new Command({
                 embeds: [
                     new MessageEmbed()
                     .setColor('RANDOM')
-                    .addField('Skip',  `Song **${skippedTrack.title}** has been skipped`)
+                    .addField('Skip',  `Song [**${skippedTrack.title}**](${skippedTrack.url}) has been skipped`)
                     .setThumbnail(skippedTrack.thumbnail)
-                    .setFooter(`Paused by \`${interaction.user.tag}\``)
+                    .setFooter(`Skipped by \`${interaction.user.tag}\``)
                     .setTimestamp()
                     .setThumbnail(skippedTrack.thumbnail)
                 ],

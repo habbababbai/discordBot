@@ -21,32 +21,23 @@ export class ExtendedPlayer extends Player {
             (queue.metadata as TextChannel).send({embeds: [
                 new MessageEmbed()
                 .setColor('RANDOM')
-                .addField('Now playing', `Song **${track}** \n in **${queue.connection.channel}**.`)
+                .addField('Now playing', `Song [**${track.title}**](${track.url}) by ${track.author} \n in **${queue.connection.channel}**.`)
                 .setThumbnail(track.thumbnail)
                 .setFooter(`Queued by \`${track.requestedBy.tag}\``)
                 .setTimestamp()
             ]})
         })
-        .on('trackEnd', async (queue) => {
+        .on('trackEnd', (queue) => {
+            // bypass for channelEmpty event not emmiting
             const channel = queue.connection.channel;
-            if (channel.members.size - 1 === 0) {
+            if (channel.members.size === 1) {
                 (queue.metadata as TextChannel).send({embeds: [
                     new MessageEmbed()
                     .setColor('RANDOM')
-                    .addField('Disconnect', `**${channel.name}** is empty. Leaving voice channel!`)
+                    .addField('Queue', `**${channel.name}** is empty. Leaving voice channel!`)
                     .setTimestamp()
                 ]});
-                await queue.connection.disconnect();
-                await queue.stop();
-            }
-
-            if (queue.tracks.length === 0 ) {
-                (queue.metadata as TextChannel).send({embeds: [
-                    new MessageEmbed()
-                    .setColor('RANDOM')
-                    .addField('Disconnect', `**Queue** is empty. Leaving voice channel!`)
-                    .setTimestamp()
-                ]});
+                queue.stop();
             }
         })
         .on('connectionCreate', (queue, connection) => {
@@ -58,19 +49,33 @@ export class ExtendedPlayer extends Player {
             ]});
         })
         .on('error', (queue, error) => {
-            console.log(`**${queue.guild.name}**: Error emitted from the queue: **${error.message}**`);
-            queue.clear();
-            queue.connection.disconnect();
+            console.log(`${queue.guild.name}: Error emitted from the queue: ${error.message}`);
             const channel = queue.connection.channel;
             (queue.metadata as TextChannel).send({embeds: [
                 new MessageEmbed()
                 .setColor('RANDOM')
-                .addField('Error', `An error has occured **${error.message}**.`)
+                .addField('Error', `An error has occured **${error.name}**: ${error.message}.`)
                 .setTimestamp()
-            ]})
+            ]});
+            if (!queue.destroyed) {
+                queue.clear();
+                queue.stop();
+            }
         })
         .on('connectionError', (queue, error) => {
             console.log(`**${queue.guild.name}**: Error emitted from the queue: **${error.message}**`);
+        })
+        .on('queueEnd', (queue) => {
+            (queue.metadata as TextChannel).send({embeds: [
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Disconnect', `**Queue** is empty. Leaving voice channel!`)
+                .setTimestamp()
+            ]});
+        })
+        .on('channelEmpty', (queue) => {
+            //Idk why but this event doesn't seem to emit ;-;
+            console.log('voice channel is empty')
         })
         
     }

@@ -1,4 +1,4 @@
-import { QueryType } from "discord-player";
+import { QueryType, Track } from "discord-player";
 import { Guild, MessageEmbed } from "discord.js";
 import { Command } from "../../structures/Command";
 
@@ -8,14 +8,14 @@ export default new Command ({
     options: [
         {
             name: 'url',
-            description: 'Enter song name/url',
+            description: 'Enter song title / url / playlist from Youtube / Spotify / Soundcloud',
             required: true,
             type: 'STRING'
         }
     ],
     run: async ({interaction, player}) => {
         const songTitle = interaction.options.getString('url');
-
+    
         if (!interaction.member.voice.channel) 
         return interaction.followUp({
             embeds: [
@@ -35,6 +35,21 @@ export default new Command ({
             metadata: interaction.channel
         });
 
+        try {
+            if (!queue.connection) 
+                await queue.connect(interaction.member.voice.channel);
+        } catch (error) {
+            player.deleteQueue(interaction.guild);
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', 'Could not join your voice channel!')
+                ],
+                ephemeral: true
+            });
+        }
+
         if (!queue.connection) 
             await queue.connect(interaction.member.voice.channel);
 
@@ -47,26 +62,40 @@ export default new Command ({
                 ],
                 ephemeral: true
             });
+        
+        queue.setVolume(player.defaultVolume);
 
-        if (queue.tracks.length === 0) {
-            searchReasult.playlist 
-            ? queue.addTracks(searchReasult.tracks) 
-            : queue.addTrack(searchReasult.tracks[0]);
+        
+
+        if (searchReasult.playlist) {
+            interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error!', 'You can only insert one song at a time! Inserting first song of playlist.')
+                ],
+                ephemeral: true
+            })
         }
-        queue.insert(searchReasult.tracks[0])
+        queue.insert(searchReasult.tracks[0]);
 
         if (!queue.playing) await queue.play();
 
-        interaction.followUp({
-            embeds: [
-                new MessageEmbed()
-                .setColor('RANDOM')
-                .addField('Insert', `Song inserted **${searchReasult.tracks[0]}** \n into **${interaction.member.voice.channel.name}**.`)
-                .setThumbnail(searchReasult.tracks[0].thumbnail)
-                .setFooter(`Queued by \`${interaction.member.nickname}\``)
-                .setTimestamp()
-            ]
-        })
+        const embed = new MessageEmbed();
+
+        const current:Track = searchReasult.tracks[0];
+        const trackInfo: string = `| [**${current.title}**](${current.url}) - \`${current.requestedBy.tag}\`\n\n`;
+        embed.setColor('RANDOM')
+            .setTitle(`Inserted Song - ${interaction.guild.name}`)
+            .setFooter(`Used by \`${interaction.user.tag}\``)
+            .addField('Song', trackInfo)
+            .setThumbnail(current.thumbnail)
+            .setTimestamp()
+
+        
+
+        interaction.followUp({embeds: [embed]});
+
 
     }
 })

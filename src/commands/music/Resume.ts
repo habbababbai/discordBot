@@ -45,7 +45,7 @@ export default new Command({
             embeds: [
                 new MessageEmbed()
                 .setColor('RANDOM')
-                .addField('Resume',  `Song **${queue.current.title}** has been resumed.`)
+                .addField('Resume',  `Song [**${queue.current.title}**](${queue.current.url}) has been resumed.`)
                 .setFooter(`Paused by \`${interaction.user.tag}\``)
                 .setTimestamp()
                 .setThumbnail(queue.current.thumbnail)

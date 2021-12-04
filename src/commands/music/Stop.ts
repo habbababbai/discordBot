@@ -38,6 +38,7 @@ export default new Command({
             });
         
         if (!queue.destroyed) {
+            queue.clear();
             queue.stop();
         }
         interaction.followUp({
