@@ -35,7 +35,7 @@ export default new Command({
         }
         await interaction.channel.messages.fetch({limit: number}).then(async messages => {
             const channel = interaction.channel as TextChannel;
-            let deletedCount = await (await channel.bulkDelete(messages, true)).size;
+            let deletedCount = (await channel.bulkDelete(messages, true)).size;
             const oldCount = number - deletedCount;
             
             interaction.followUp({

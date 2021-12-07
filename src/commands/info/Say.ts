@@ -1,5 +1,5 @@
 import { Command } from '../../structures/Command';
-import { Constants } from 'discord.js';
+import { Constants, MessageEmbed } from 'discord.js';
 
 export default new Command({
     name: 'say',
@@ -19,7 +19,14 @@ export default new Command({
 
     run: async ({interaction, args}) => {
         interaction.channel?.send(args.getString('text') as string);
-        interaction.deleteReply();
+        interaction.followUp({
+            embeds:[
+                new MessageEmbed()
+                .setColor('RANDOM')
+                .addField('Say', `Executed command`)
+                .setFooter(`Used by \`${interaction.user.tag}\``)
+                .setTimestamp()
+            ]});
     }
     
 })
