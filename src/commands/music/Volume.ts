@@ -53,7 +53,7 @@ export default new Command ({
                     new MessageEmbed()
                     .setColor('RANDOM')
                     .addField('Percentage', `Current volume is \`${queue.volume}%\``)
-                    .setFooter(`Checked by \`${interaction.user.tag}\``)
+                    .setFooter({text: `Checked by \`${interaction.user.tag}\``})
                     .setTimestamp()
                 ]
             });
@@ -68,7 +68,7 @@ export default new Command ({
                 new MessageEmbed()
                 .setColor('RANDOM')
                 .addField('Percentage', `Volume has been set to \`${volumePercentage}%\``)
-                .setFooter(`Checked by \`${interaction.user.tag}\``)
+                .setFooter({text: `Checked by \`${interaction.user.tag}\``})
                 .setTimestamp()
             ] 
         })

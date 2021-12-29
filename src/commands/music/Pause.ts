@@ -1,40 +1,49 @@
-import { MessageEmbed } from 'discord.js';
-import { Command } from '../../structures/Command';
+import { MessageEmbed } from "discord.js";
+import { Command } from "../../structures/Command";
 
 export default new Command({
-    name:'pause',
-    description: 'Pauses current song.',
-    run: async ({interaction, player}) => {
-        if (!interaction.member.voice.channel) 
+    name: "pause",
+    description: "Pauses current song.",
+    run: async ({ interaction, player }) => {
+        if (!interaction.member.voice.channel)
             return interaction.followUp({
                 embeds: [
                     new MessageEmbed()
-                    .setColor('RANDOM')
-                    .addField('Error', 'You have to be in voice channel!')
+                        .setColor("RANDOM")
+                        .addField("Error", "You have to be in voice channel!"),
                 ],
-                ephemeral: true
+                ephemeral: true,
             });
 
-        if (interaction.member.voice.channel.id !== interaction.guild?.me?.voice.channel?.id) 
+        if (
+            interaction.member.voice.channel.id !==
+            interaction.guild?.me?.voice.channel?.id
+        )
             return interaction.followUp({
                 embeds: [
                     new MessageEmbed()
-                    .setColor('RANDOM')
-                    .addField('Error', 'You have to be in the same voice channel as me!')
+                        .setColor("RANDOM")
+                        .addField(
+                            "Error",
+                            "You have to be in the same voice channel as me!"
+                        ),
                 ],
-                ephemeral: true
+                ephemeral: true,
             });
 
         const queue = player.getQueue(interaction.guild);
 
-        if (!queue.playing) 
+        if (!queue.playing)
             return interaction.followUp({
                 embeds: [
                     new MessageEmbed()
-                    .setColor('RANDOM')
-                    .addField('Error', 'No music is currently being played!')
+                        .setColor("RANDOM")
+                        .addField(
+                            "Error",
+                            "No music is currently being played!"
+                        ),
                 ],
-                ephemeral: true
+                ephemeral: true,
             });
 
         queue.setPaused(true);
@@ -42,12 +51,17 @@ export default new Command({
         interaction.followUp({
             embeds: [
                 new MessageEmbed()
-                .setColor('RANDOM')
-                .addField('Pause',  `Song [**${queue.current.title}**](${queue.current.url})has been paused.`)
-                .setFooter(`Paused by \`${interaction.user.tag}\``)
-                .setTimestamp()
-                .setThumbnail(queue.current.thumbnail)
+                    .setColor("RANDOM")
+                    .addField(
+                        "Pause",
+                        `Song [**${queue.current.title}**](${queue.current.url})has been paused.`
+                    )
+                    .setFooter({
+                        text: `Paused by \`${interaction.user.tag}\``,
+                    })
+                    .setTimestamp()
+                    .setThumbnail(queue.current.thumbnail),
             ],
         });
-    }
-})
+    },
+});

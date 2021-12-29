@@ -46,19 +46,10 @@ export default new Command({
         const trackInfo: string = `| [**${nowPlaying.title}**](${nowPlaying.url}) - \`${nowPlaying.requestedBy.tag}\`\n\n`;
         embed.setColor('RANDOM')
             .setTitle(`Song Queue - ${interaction.guild.name}`)
-            .setFooter(`Used by \`${interaction.user.tag}\``)
+            .setFooter({text: `Used by \`${interaction.user.tag}\``})
             .addField('Current', trackInfo)
             .setThumbnail(nowPlaying.thumbnail)
             .setTimestamp()
-        /*
-        if (queue.tracks.length < 5 && queue.tracks.length > 0) {
-            let tracks: string = '';
-            for (let i = 1; i < queue.tracks.length; i++) {
-                const track: Track = queue.tracks[i];
-                tracks += `\`${i + 1}\` - [**${track.title}**](${track.url}) - \`${track.requestedBy.tag}\``;
-            }
-        }
-        */
 
         if (queue.tracks.length > 1) {
             let tracks: string = '';

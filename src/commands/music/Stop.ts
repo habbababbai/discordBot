@@ -27,16 +27,6 @@ export default new Command({
 
         const queue = player.getQueue(interaction.guild);
 
-        if (!queue.playing) 
-            return interaction.followUp({
-                embeds: [
-                    new MessageEmbed()
-                    .setColor('RANDOM')
-                    .addField('Error', 'No music is currently being played!')
-                ],
-                ephemeral: true
-            });
-        
         if (!queue.destroyed) {
             queue.clear();
             queue.stop();
@@ -46,7 +36,7 @@ export default new Command({
                 new MessageEmbed()
                 .setColor('RANDOM')
                 .addField('Stop',  `Music stopped and left voice channel.`)
-                .setFooter(`Stopped by \`${interaction.user.tag}\``)
+                .setFooter({text: `Stopped by \`${interaction.user.tag}\``})
                 .setTimestamp()
             ],
         });

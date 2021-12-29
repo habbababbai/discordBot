@@ -9,8 +9,6 @@ export class ExtendedPlayer extends Player {
             ytdlOptions: {
                 quality: 'highestaudio',
                 filter: 'audioonly',
-                highWaterMark: 1 << 25,
-                dlChunkSize: 0,
             },
         });
         this.start();
@@ -51,15 +49,16 @@ export class ExtendedPlayer extends Player {
         .on('error', (queue, error) => {
             console.log(`${queue.guild.name}: Error emitted from the queue: ${error.message}`);
             const channel = queue.connection.channel;
-            (queue.metadata as TextChannel).send({embeds: [
-                new MessageEmbed()
-                .setColor('RANDOM')
-                .addField('Error', `An error has occured **${error.name}**: ${error.message}.`)
-                .setTimestamp()
-            ]});
+            
             if (!queue.destroyed) {
                 queue.clear();
                 queue.stop();
+                (queue.metadata as TextChannel).send({embeds: [
+                    new MessageEmbed()
+                    .setColor('RANDOM')
+                    .addField('Error', `An error has occured! Stopping the queue!`)
+                    .setTimestamp()
+                ]});
             }
         })
         .on('connectionError', (queue, error) => {

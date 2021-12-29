@@ -46,7 +46,7 @@ export default new Command({
                     .setColor('RANDOM')
                     .addField('Skip',  `Song [**${skippedTrack.title}**](${skippedTrack.url}) has been skipped`)
                     .setThumbnail(skippedTrack.thumbnail)
-                    .setFooter(`Skipped by \`${interaction.user.tag}\``)
+                    .setFooter({text :`Skipped by \`${interaction.user.tag}\``})
                     .setTimestamp()
                     .setThumbnail(skippedTrack.thumbnail)
                 ],

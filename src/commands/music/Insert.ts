@@ -8,7 +8,7 @@ export default new Command ({
     options: [
         {
             name: 'url',
-            description: 'Enter song title / url / playlist from Youtube / Spotify / Soundcloud',
+            description: 'Enter song title / url / playlist from Youtube / Spotify',
             required: true,
             type: 'STRING'
         }
@@ -87,7 +87,7 @@ export default new Command ({
         const trackInfo: string = `| [**${current.title}**](${current.url}) - \`${current.requestedBy.tag}\`\n\n`;
         embed.setColor('RANDOM')
             .setTitle(`Inserted Song - ${interaction.guild.name}`)
-            .setFooter(`Used by \`${interaction.user.tag}\``)
+            .setFooter({text: `Used by \`${interaction.user.tag}\``})
             .addField('Song', trackInfo)
             .setThumbnail(current.thumbnail)
             .setTimestamp()
