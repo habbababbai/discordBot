@@ -93,7 +93,7 @@ export default new Command({
         embed
             .setColor("RANDOM")
             .setTitle(`Added Song - ${interaction.guild.name}`)
-            .setFooter(`Used by \`${interaction.user.tag}\``)
+            .setFooter({ text: `Used by \`${interaction.user.tag}\`` })
             .addField("Song", trackInfo)
             .setThumbnail(current.thumbnail)
             .setTimestamp();
